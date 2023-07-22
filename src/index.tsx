@@ -17,6 +17,7 @@ import Chat, { Message, ChatSettings } from './Pages/Chat/Chat';
 import Hud from './Pages/Hud/Hud';
 import Car from './Pages/Hud/Vehicle';
 import Scoreboard from './Pages/Scoreboard/Scoreboard';
+import Inventory from './Pages/Inventory/Inventory';
 
 declare global {
   interface Window {
@@ -37,6 +38,7 @@ const router = createBrowserRouter(
       <Route path="hud" element={<Hud />} />
       <Route path="car" element={<Car />} />     
       <Route path="scoreboard" element={<Scoreboard/>}/> 
+      <Route path="inventory" element={<Inventory/>}/>
     </Route>
   )
   );

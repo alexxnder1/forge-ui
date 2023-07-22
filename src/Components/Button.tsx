@@ -30,9 +30,12 @@ const Button = (props: ButtonProps) => {
                 border: 0,
                 boxShadow: "0px 0px 7px black",
                 display: "flex",
+                justifyContent:"center",
                 alignItems: "center",
                 outline: 0,
                 borderRadius: "5px",
+                fontFamily:"barlow",
+                width: props.width || "auto",
                 height: props.height || "auto",
             }}}>
             <div id ="icon" style={{
