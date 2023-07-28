@@ -19,6 +19,7 @@
     "fast-average-color": "^9.3.0",
     "rage-rpc": "^0.4.0",
     "react": "^18.2.0",
+    "react-audio-player": "^0.17.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.13.0",
     "react-scripts": "5.0.1",

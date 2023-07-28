@@ -4,7 +4,7 @@ interface Input {
     icon?: ReactNode,
     type?: string | "text",
     onChange?:(e: React.ChangeEvent<HTMLInputElement>) => void,
-    value: string,
+    value: string | number,
     readOnly?: boolean,
     placeholder?: string,
     style?: React.CSSProperties,

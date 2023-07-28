@@ -2,12 +2,20 @@ const Character = () => {
     return (
         <div id="character" style={{
             display: "flex",
-            alignItems:"center"
+            alignItems:"center",
+            justifyContent:"center",
+            flexDirection:"column"
+                        
         }}>
+            <h1 style={{
+                fontFamily:"roboto",
+                fontSize: 16,
+            }}>dev(1)</h1>
             <img src="person.png" style={{
-                width: "300px",     
-                height: "300px",                   
+                width: "450px",     
+                height: "450px",                   
             }}/>
+
         </div>
     )
 };

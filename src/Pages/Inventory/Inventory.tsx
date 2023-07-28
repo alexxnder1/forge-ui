@@ -4,6 +4,8 @@ import Items from "./Items";
 import Character from "./Character";
 import Dialog from "../../Components/Dialog";
 import DropItem from "./DropItem";
+import NearbyItems from "./NearbyItems";
+import Loading from "../../Components/Loading/Loading";
 
 export const INVALID_ITEM = -1;
 
@@ -33,18 +35,28 @@ const Inventory = () => {
         maxItems: 100
     })
     
-    const [items, setItems] = useState<Array<Item>>([]);
-    const [itemClicked, setItemClicked] = useState<number>(-1);
-    const [dropItemMenu, setDropItemMenu] = useState<boolean>(false);
+    const [items, setItems] = useState<Array<Item>>([
+    {
+        name: `Cigarettes`,
+        description:`da`,
+        image: `https://fumezi.com/wp-content/uploads/2023/05/9129412526110.png`,
+        stackable: true,
+        stackAmount: 9,
+        maxStackAmount: 10,
+        id: 0,
+    }
+]);
+    const [itemClicked, setItemClicked] = useState<Item | null>(null);
+    const [droppingItem, setDroppingItem] = useState<Item | null>(null);
 
     var inventoryRef = useRef<HTMLDivElement>(null);
 
-    const showItemMenu = (index: number) => {
-        setItemClicked(index);
+    const showItemMenu = (item: Item) => {
+        setItemClicked(item);
     };
 
     const hideItemMenu = () => {
-        setItemClicked(INVALID_ITEM);
+        setItemClicked(null);
     }
 
     const swapItems = (first: number, second: number, ord: boolean) => {
@@ -71,85 +83,77 @@ const Inventory = () => {
         }
     }
 
-    const giveItems = (newItems : Array<Item>) => {
-        newItems.map((item, index) => {
-            item.id = index;
-        })
-        setItems(newItems);
+    window.SetItems = (newItems : string) => {
+        setItems(JSON.parse(newItems));
     };
 
-    useEffect(() => {
-        giveItems([{
-            name: `Cigarettes`,
-            description:`da`,
-            image: `https://fumezi.com/wp-content/uploads/2023/05/9129412526110.png`,
-            stackable: true,
-            stackAmount: 9,
-            maxStackAmount: 10
-        },
     
-        {
-            name: `Hamburger`,
-            description:`food`,
-            image: `https://cdn-icons-png.flaticon.com/512/3075/3075977.png`,
-            stackable: true,
-            stackAmount: 1,
-            maxStackAmount: 10
-        }
-        ])
-    }, []);
-    
-    const dropItem = () => {
-        
-        // var newState = items;
-        // newState.splice(itemClicked, 1);
-        // newState = newState;
+    const showDropItemMenu = () => {
+        setDroppingItem(itemClicked);
+    };
 
-        // setItems(newState);
-        setDropItemMenu(true);
-        // hideItemMenu();
+    const deleteItem = (index: number, amount: number) => {
+        var newState = items;
+        var item = newState.at(index);
+        if(item) {
+            if(amount === item.stackAmount) {
+                newState.splice(index, 1);
+                setItemClicked(null);
+            }
+
+            else {
+                item.stackAmount-=amount;
+            }
+
+            setDroppingItem(null);
+            mp.trigger('inventory.drop.item', index, amount);
+            setItems(newState);
+        }
     };
 
     return (
-        <div id="inventory" style={{
-            position: "absolute",
-            left: 0,
-            top: 0,
-            width: "100%",
-            height: "100%",
-        }} ref={inventoryRef}>
-            { dropItemMenu && <DropItem/> }
-
-            { 
-            itemClicked !== INVALID_ITEM
-            &&
-            <Dialog 
-                title={`${items[itemClicked].name} (${items[itemClicked].stackAmount !== 1 ? `${items[itemClicked].stackAmount}x` : ''})`} 
-                description={`${items[itemClicked].description}`}
-                icon={`${items[itemClicked].image}`}
-                buttons={[
-                    {name: 'Use', onClick: () => {alert('da')}},
-                    {name: 'Drop', onClick: () => {dropItem()}},
-                    {name: 'Cancel', onClick: () => {hideItemMenu()}},
-                ]}
-            />}
-
-            <div id="container" style={{
-                backgroundColor:"black",
-                width: "950px",
-                height: "580px",
-                position: "absolute",
-                left: "50%",
-                bottom: "50%",
-                margin: "0 auto",
-                display:"inline-flex",
-                justifyContent:"end",
-                transform: "translate(-50%, 50%)"
-            }}>
-                <Character/>
-                <Items data={items} showItemMenu={showItemMenu} maxItems={inventory.maxItems} swapItems={swapItems}/>
-            </div>
-        </div>
+        <>
+        { items.length !== 1 && items.at(0)?.name === 'Cigarettes' ?
+            
+            
+            <Loading style={{color:"black"}}/>
+            :           
+                <div id="inventory" style={{
+                    position: "absolute",
+                    left: 0,
+                    top: 0,
+                    width: "100%",
+                    height: "100%",
+                    display:"flex",
+                    alignItems:"center",
+                    justifyContent:"space-between"
+                }} ref={inventoryRef}>
+                        { droppingItem !== null && <DropItem onExit={() => setDroppingItem(null)} item={droppingItem} deleteItem={deleteItem} index={items.indexOf(droppingItem)}/> }
+                        { 
+                        itemClicked !== null
+                        &&
+                        <Dialog 
+                            title={`${itemClicked.name} ${itemClicked.stackAmount !== 1 ? `(${itemClicked.stackAmount}x)` : ''}`} 
+                            description={`${itemClicked.description}`}
+                            icon={`${itemClicked.image}`}
+                            buttons={[
+                                {name: 'Use', onClick: () => {alert('da')}},
+                                {name: 'Drop', onClick: () => {
+                                    if(itemClicked.stackAmount === 1)
+                                        deleteItem(items.indexOf(itemClicked), 1);
+        
+                                    else showDropItemMenu()
+                                }},
+                                {name: 'Cancel', onClick: () => {hideItemMenu()}},
+                            ]}
+                        />}
+                        
+                        <Items data={items} showItemMenu={showItemMenu} maxItems={inventory.maxItems} swapItems={swapItems}/>
+                        <Character/>
+                        <NearbyItems showItemMenu={showItemMenu}/>        
+                </div> 
+            }
+        </>
     )    
 };
 

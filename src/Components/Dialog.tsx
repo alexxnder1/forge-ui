@@ -1,6 +1,5 @@
 import React from "react";
 import Button from "./Button";
-
 export interface Button {
     name: string,
     onClick: () => void;
@@ -17,11 +16,11 @@ export interface DialogProps {
 const Dialog = (props: DialogProps) => {
     return (
         <div id="dialog" style={{
-            backgroundColor: "rgba(34, 46, 80, .8)",
+            backgroundColor: `rgba(34, 46, 80, .8)`,
             width: "100%",
             height: "100%",
             position: "absolute",
-            zIndex: 999,
+            zIndex: 2000,
             display: "flex",
             justifyContent:"center",
             flexDirection: "column",
@@ -31,8 +30,8 @@ const Dialog = (props: DialogProps) => {
         }}>
 
         <h1>{props.title.toUpperCase()}</h1>
-        <img style={{ width:"80px", paddingBottom: "30px", opacity: 0.8 }} src={`${props.icon}`}/>
-        <h1 style={{fontSize: "18px", padding: "300px", paddingTop: 0, paddingBottom: "20px"}}>{props.description}</h1>
+        <img style={{ width:"80px", paddingBottom: "0px", opacity: 0.8 }} src={`${props.icon}`}/>
+        <h1 style={{fontSize: "18px", padding: "300px", paddingTop: "10px", paddingBottom: "20px"}}>{props.description}</h1>
 
         <div style={{ 
             display:"inline-flex",
@@ -41,7 +40,7 @@ const Dialog = (props: DialogProps) => {
             props.buttons?.map((button, index) => {
                 return (
                     <>
-                     <Button key={index} onClick={() => button.onClick()} text={`${button.name}`} backgroundColor="#FCCB06" width={150} height={50} style={{
+                     <Button key={index} onClick={() => button.onClick()} text={`${button.name}`} backgroundColor="#FCCB06" width={100} height={40} style={{
                         marginRight: "15px",
                         fontSize:"15px"
                     }}/>
